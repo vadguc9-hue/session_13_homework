@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Statistics Row -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-info text-white h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Total Books</h5>
+                <h2>{{ stats['total_books'] }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success text-white h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Pages Read</h5>
+                <h2>{{ stats['pages_read'] or 0 }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Avg. Rating</h5>
+                <h2>{{ "%.1f"|format(stats['avg_rating']) if stats['avg_rating'] else 'N/A' }} ⭐</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-primary text-white h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Reading Goal</h5>
+                <h2>{{ finished_count }} / {{ goal['yearly_goal'] }}</h2>
+                <form action="{{ url_for('update_goal') }}" method="POST" class="d-flex mt-2">
+                    <input type="number" name="goal" class="form-control form-control-sm me-2" value="{{ goal['yearly_goal'] }}">
+                    <button type="submit" class="btn btn-light btn-sm">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('index') }}" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <input type="text" name="q" class="form-control" placeholder="Search title or author..." value="{{ search_query }}">
+            </div>
+            <div class="col-auto">
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="Want to Read" {% if status_filter == 'Want to Read' %}selected{% endif %}>Want to Read</option>
+                    <option value="Reading" {% if status_filter == 'Reading' %}selected{% endif %}>Reading</option>
+                    <option value="Finished" {% if status_filter == 'Finished' %}selected{% endif %}>Finished</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-secondary">Filter/Search</button>
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Library Grid -->
+<h3>My Library</h3>
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+    {% if books %}
+        {% for book in books %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book['title'] }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ book['author'] }}</h6>
+                    <span class="badge 
+                        {% if book['status'] == 'Want to Read' %}bg-secondary
+                        {% elif book['status'] == 'Reading' %}bg-primary
+                        {% else %}bg-success{% endif %} mb-2">
+                        {{ book['status'] }}
+                    </span>
+                    <p class="card-text mb-1"><small>Genre: {{ book['genre'] }}</small></p>
+                    
+                    <!-- Reading Progress (Corrected) -->
+                    {% set progress = (book['current_page'] / book['pages'] * 100) if book['pages'] > 0 else 0 %}
+                    <div class="progress mb-3" role="progressbar" aria-label="Reading progress" aria-valuenow="{{ progress|int }}" aria-valuemin="0" aria-valuemax="100" style="height: 10px;">
+                        <div class="progress-bar" style="width: {{ progress|int }}%;"></div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a href="{{ url_for('view_book', book_id=book['id']) }}" class="btn btn-sm btn-outline-primary w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <!-- Empty State -->
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted">No books found!</h4>
+            <p>Try clearing your filters or <a href="{{ url_for('add_book') }}">add a new book</a>.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>My App</title>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> | <a href="/dashboard">Dashboard</a>
+    </nav>
+
+    <h1>Item Catalog</h1>
+
+    <form action="/" method="GET" class="search-form">
+        <input type="text" name="q" placeholder="Search name or description..." value="{{ query }}">
+        <button type="submit">Search</button>
+        {% if query %}
+            <a href="/">Clear</a>
+        {% endif %}
+    </form>
+
+    {% if query %}
+        <p><strong>Found {{ count }} items matching '{{ query }}'</strong></p>
+    {% endif %}
+
+    <div class="item-list">
+        {% for item in items %}
+            <div class="item-card">
+                <h3>{{ item['name'] }}</h3>
+                <p>{{ item['description'] }}</p>
+                <small>Category: {{ item['category'] }} | Rating: {{ item['rating'] }}/5</small>
+            </div>
+        {% else %}
+            <p>No results found matching your search.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

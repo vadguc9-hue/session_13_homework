@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">Add New Book</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Title *</label>
+                        <input type="text" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Author *</label>
+                        <input type="text" name="author" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Genre</label>
+                        <input type="text" name="genre" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Total Pages *</label>
+                        <input type="number" name="pages" class="form-control" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select">
+                            <option value="Want to Read">Want to Read</option>
+                            <option value="Reading">Reading</option>
+                            <option value="Finished">Finished</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Book</button>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

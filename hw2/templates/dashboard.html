@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Statistics Dashboard</title>
+</head>
+<body>
+    <nav><a href="/">Back to Home</a></nav>
+    <h1>Statistics Dashboard</h1>
+
+    <section class="stats-grid">
+        <div class="stat-box">
+            <h2>Total Items</h2>
+            <p class="big-number">{{ total }}</p>
+        </div>
+
+        <div class="stat-box">
+            <h2>Average Rating</h2>
+            <p class="big-number">{{ avg }} / 5</p>
+        </div>
+
+        <div class="stat-box">
+            <h2>By Category</h2>
+            <ul>
+                {% for cat in categories %}
+                    <li>{{ cat['category'] }}: {{ cat['count'] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="stat-box">
+            <h2>Top Rated Items</h2>
+            <ol>
+                {% for item in top_items %}
+                    <li>{{ item['name'] }} ({{ item['rating'] }})</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </section>
+</body>
+</html>
